@@ -273,8 +273,10 @@ canvas { display: block; width: 100%; touch-action: none; pointer-events: none; 
 @media (max-width: 639px) {
   .left-panel, .right-panel { width: 100%; }
   .desktop-header { display: none; }
-  .stepper-input-desktop { display: none; }
-  .phase-input-desktop { display: none; }
+  .stepper-input-desktop { display: block; }
+  .phase-input-desktop { display: block; }
+  .stepper-display { display: none; }
+  .phase-amount { display: none; }
   .mobile-header { display: block; margin-bottom: 4px; }
   .tips-section { display: block; }
 }
