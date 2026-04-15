@@ -229,7 +229,7 @@ canvas { display: block; width: 100%; touch-action: none; pointer-events: none; 
   .stepper-input-desktop {
     display: block;
     font-size: 18px; font-weight: 700; color: var(--blue);
-    width: 64px; text-align: center;
+    width: 48px; text-align: center;
     border: none; background: transparent; outline: none;
     -webkit-user-select: text; user-select: text;
   }
@@ -238,7 +238,7 @@ canvas { display: block; width: 100%; touch-action: none; pointer-events: none; 
   .phase-amount { display: none; }
   .phase-input-desktop {
     display: block;
-    flex: 1; font-size: 15px; font-weight: 700;
+    width: 80px; font-size: 15px; font-weight: 700;
     border: 1.5px solid var(--border); border-radius: 8px;
     padding: 6px 8px; text-align: center;
     background: var(--bg); color: var(--text); outline: none;
@@ -275,12 +275,18 @@ canvas { display: block; width: 100%; touch-action: none; pointer-events: none; 
 @media (max-width: 639px) {
   .left-panel, .right-panel { width: 100%; }
   .desktop-header { display: none; }
-  .stepper-input-desktop { display: block; }
-  .phase-input-desktop { display: block; }
+  .stepper-input-desktop { display: block; width: 44px; font-size: 15px; }
+  .phase-input-desktop { display: block; width: 90px; flex: none; font-size: 13px; }
   .stepper-display { display: none; }
   .phase-amount { display: none; }
   .mobile-header { display: block; margin-bottom: 4px; }
   .tips-section { display: block; }
+  .phase-stepper { gap: 3px; }
+  .stepper-btn { width: 34px; height: 34px; font-size: 18px; }
+  .phase-card { padding: 10px 8px; }
+  .layout { padding: 12px 8px; }
+  .age-row-card { padding: 8px 10px; }
+  .assumption-row { padding: 8px 10px; }
 }
 </style>
 </head>
