@@ -1,83 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Retirement Calculator</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
+
 :root {
---blue: #378ADD;
---blue-dark: #185FA5;
---green: #1D9E75;
---green-dark: #0F6E56;
---purple: #7F77DD;
---amber: #EF9F27;
---coral: #D85A30;
---indigo: #534AB7;
---red: #E24B4A;
---bg: #f4f3f0;
---card: #ffffff;
---text: #1a1a1a;
---muted: #888;
---border: #e0deda;
+  --blue: #378ADD;
+  --blue-dark: #185FA5;
+  --green: #1D9E75;
+  --green-dark: #0F6E56;
+  --purple: #7F77DD;
+  --amber: #EF9F27;
+  --coral: #D85A30;
+  --indigo: #534AB7;
+  --red: #E24B4A;
+  --bg: #f4f3f0;
+  --card: #ffffff;
+  --text: #1a1a1a;
+  --muted: #888;
+  --border: #e0deda;
 }
+
 html, body {
-overflow-x: hidden;
-overflow-y: visible;
-height: auto;
--webkit-user-select: none;
-user-select: none;
--webkit-touch-callout: none;
+  overflow-x: hidden;
+  overflow-y: visible;
+  height: auto;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
 }
-input[type=number]::-webkit-inner-spin-button,
-input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
-input[type=number] { -moz-appearance: textfield; appearance: textfield; }
+
 body {
-font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
-background: var(--bg);
-color: var(--text);
-font-size: 14px;
+  font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
 }
+
+/* -- Layout -- */
 .layout {
-padding: 16px 28px;
-display: flex;
-flex-direction: column;
-gap: 0;
+  padding: 16px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
 }
+
 .section-label {
-font-size: 10px; font-weight: 700; letter-spacing: 0.8px;
-text-transform: uppercase; color: var(--muted);
-margin: 16px 0 6px;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.8px;
+  text-transform: uppercase; color: var(--muted);
+  margin: 16px 0 6px;
 }
 .section-label:first-child { margin-top: 0; }
+
+/* -- Cards -- */
 .card {
-background: var(--card); border-radius: 12px; padding: 12px 14px;
+  background: var(--card); border-radius: 12px; padding: 12px 14px;
 }
+
+/* -- Age row -- */
 .age-row-card {
-background: var(--card); border-radius: 12px;
-padding: 10px 14px;
-display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  background: var(--card); border-radius: 12px;
+  padding: 10px 14px;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
 }
 .age-row-card.highlight { border: 1.5px solid var(--blue); }
 .age-row-card label { font-size: 11px; color: var(--muted); flex: 1; }
+
+/* -- Stepper (mobile: large touch buttons, desktop: input) -- */
 .stepper {
-display: flex; align-items: center; gap: 6px; flex-shrink: 0;
+  display: flex; align-items: center; gap: 6px; flex-shrink: 0;
 }
 .stepper-btn {
-width: 36px; height: 36px; border-radius: 10px;
-border: 1.5px solid var(--border);
-background: var(--bg); color: var(--text);
-font-size: 18px; font-weight: 600;
-cursor: pointer; display: flex; align-items: center; justify-content: center;
-flex-shrink: 0; user-select: none; -webkit-user-select: none;
-touch-action: manipulation;
-transition: background 0.1s;
+  width: 36px; height: 36px; border-radius: 10px;
+  border: 1.5px solid var(--border);
+  background: var(--bg); color: var(--text);
+  font-size: 18px; font-weight: 600;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; user-select: none; -webkit-user-select: none;
+  touch-action: manipulation;
+  transition: background 0.1s;
 }
 .stepper-btn:active { background: var(--border); }
 .stepper-display {
-font-size: 18px; font-weight: 700; color: var(--blue);
-min-width: 48px; text-align: center;
+  font-size: 18px; font-weight: 700; color: var(--blue);
+  min-width: 48px; text-align: center;
 }
 .stepper-unit { font-size: 12px; color: var(--muted); }
+
+/* -- Phase cards -- */
 .phase-card {
-background: var(--card); border-radius: 12px;
-padding: 10px 14px; margin-bottom: 6px;
-border-left: 4px solid #ccc; display: none;
+  background: var(--card); border-radius: 12px;
+  padding: 10px 14px; margin-bottom: 6px;
+  border-left: 4px solid #ccc; display: none;
 }
 .phase-card.visible { display: block; }
 .phase-card.inactive { opacity: 0.4; }
@@ -89,20 +106,26 @@ border-left: 4px solid #ccc; display: none;
 .phase-stepper .stepper-btn { width: 40px; height: 40px; font-size: 20px; }
 .phase-amount { font-size: 16px; font-weight: 700; flex: 1; text-align: center; min-width: 0; }
 .phase-step-label { font-size: 9px; color: var(--muted); margin-top: 4px; text-align: right; }
+
+/* -- Assumption rows -- */
 .assumption-row {
-background: var(--card); border-radius: 12px;
-padding: 10px 14px;
-display: flex; align-items: center; justify-content: space-between; gap: 12px;
-margin-bottom: 6px;
+  background: var(--card); border-radius: 12px;
+  padding: 10px 14px;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  margin-bottom: 6px;
 }
 .assumption-row label { font-size: 11px; color: var(--muted); flex: 1; }
+
+/* -- 4% rule -- */
 .rule4-card {
-background: var(--card); border-radius: 12px; padding: 10px 14px;
-border: 1.5px solid var(--amber);
+  background: var(--card); border-radius: 12px; padding: 10px 14px;
+  border: 1.5px solid var(--amber);
 }
 .rule4-card label { font-size: 11px; color: var(--muted); display: block; margin-bottom: 8px; }
+
+/* -- Results -- */
 .results-grid {
-display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
 }
 .result-card { background: var(--card); border-radius: 12px; padding: 10px 12px; min-width: 0; }
 .result-card.wide { grid-column: 1 / -1; }
@@ -112,6 +135,8 @@ display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
 .r-value.green { color: var(--green-dark); }
 .r-sub { font-size: 10px; color: var(--muted); margin-top: 3px; }
 .r-gain { color: var(--green-dark); font-weight: 700; }
+
+/* -- 4% result -- */
 .rule4-result { border-radius: 12px; padding: 10px 12px; }
 .rule4-result.on-track  { background: #eaf3de; border: 1.5px solid #639922; }
 .rule4-result.off-track { background: #fcebeb; border: 1.5px solid var(--red); }
@@ -124,540 +149,643 @@ display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
 .rule4-item { text-align: center; }
 .ri-label { font-size: 9px; color: var(--muted); margin-bottom: 2px; }
 .ri-val { font-size: 12px; font-weight: 700; word-break: break-all; }
+
+/* -- Milestones -- */
 .milestones-grid {
-display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
 }
 .milestone-pill {
-background: var(--card); border-radius: 10px;
-padding: 8px 6px; text-align: center; min-width: 0;
+  background: var(--card); border-radius: 10px;
+  padding: 8px 6px; text-align: center; min-width: 0;
 }
 .m-target { font-size: 10px; font-weight: 700; margin-bottom: 2px; }
 .m-age { font-size: 13px; font-weight: 800; }
-.chart-card { background: var(--card); border-radius: 12px; padding: 12px; max-height: 220px; }
+
+/* -- Chart -- */
+.chart-card { background: var(--card); border-radius: 12px; padding: 12px; }
 .chart-legend { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
 .legend-item { display: flex; align-items: center; gap: 4px; font-size: 10px; color: #666; }
 .legend-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
 canvas { display: block; width: 100%; touch-action: none; pointer-events: none; }
+
+/* -- Tips -- */
 .tip-card { background: var(--card); border-radius: 12px; padding: 12px 14px; display: flex; gap: 10px; margin-bottom: 6px; }
 .tip-num { font-size: 16px; font-weight: 800; flex-shrink: 0; line-height: 1; margin-top: 2px; }
 .tip-title { font-size: 12px; font-weight: 700; margin-bottom: 3px; }
 .tip-desc { font-size: 11px; color: var(--muted); line-height: 1.5; }
+
 .principle {
-background: #1a1a1a; color: #f4f3f0; border-radius: 12px;
-padding: 14px; font-size: 12px; line-height: 1.7; text-align: center; margin-top: 6px;
+  background: #1a1a1a; color: #f4f3f0; border-radius: 12px;
+  padding: 14px; font-size: 12px; line-height: 1.7; text-align: center; margin-top: 6px;
 }
 .principle strong { color: var(--amber); }
+
+/* ================================================================
+   DESKTOP LAYOUT (>= 900px) - true side-by-side dashboard
+   ================================================================ */
 @media (min-width: 640px) {
-body { overflow: hidden; height: 100vh; }
-.layout {
-flex-direction: row;
-align-items: stretch;
-padding: 20px;
-gap: 16px;
-height: 100vh;
+  body { overflow: hidden; height: 100vh; }
+
+  .layout {
+    flex-direction: row;
+    align-items: stretch;
+    padding: 20px;
+    gap: 16px;
+    height: 100vh;
+  }
+
+  /* Left panel: settings, scrollable */
+  .left-panel {
+    width: 340px;
+    flex-shrink: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+    padding-right: 4px;
+  }
+  .left-panel::-webkit-scrollbar { width: 4px; }
+  .left-panel::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+  /* Right panel: results + chart, fixed height, no scroll */
+  .right-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow: hidden;
+    min-width: 0;
+  }
+
+  /* Desktop: show title in right panel */
+  .desktop-header {
+    display: block;
+  }
+  .mobile-header { display: none; }
+
+  /* Desktop input: show text input instead of stepper display */
+  .stepper-display { display: none; }
+  .stepper-input-desktop {
+    display: block;
+    font-size: 18px; font-weight: 700; color: var(--blue);
+    width: 64px; text-align: center;
+    border: none; background: transparent; outline: none;
+    -webkit-user-select: text; user-select: text;
+  }
+
+  /* Desktop phase: show number input */
+  .phase-amount { display: none; }
+  .phase-input-desktop {
+    display: block;
+    flex: 1; font-size: 15px; font-weight: 700;
+    border: 1.5px solid var(--border); border-radius: 8px;
+    padding: 6px 8px; text-align: center;
+    background: var(--bg); color: var(--text); outline: none;
+    -webkit-user-select: text; user-select: text;
+    min-width: 0;
+  }
+  .phase-input-desktop:focus { border-color: var(--blue); background: var(--card); }
+
+  /* Tighter desktop cards */
+  .age-row-card { padding: 8px 12px; }
+  .phase-card { margin-bottom: 5px; }
+  .assumption-row { margin-bottom: 5px; }
+  .section-label { margin: 12px 0 5px; }
+
+  /* Results 3-col on desktop */
+  .results-grid { grid-template-columns: 1fr 1fr 1fr; }
+  .result-card.wide { grid-column: auto; }
+  .r-value { font-size: 18px; }
+  .r-label { font-size: 11px; }
+  .r-sub { font-size: 11px; }
+
+  /* Milestones 4-col on desktop */
+  .milestones-grid { grid-template-columns: 1fr 1fr 1fr 1fr; }
+
+  /* Chart with max height */
+  .chart-card { flex: 1; display: flex; flex-direction: column; overflow: hidden; max-height: 300px; }
+  .chart-card canvas { flex: 1; }
+
+  /* Hide tips on desktop (too long) */
+  .tips-section { display: none; }
 }
-.left-panel {
-width: 340px;
-flex-shrink: 0;
-overflow-y: auto;
-overflow-x: hidden;
-scrollbar-width: thin;
-padding-right: 4px;
-}
-.left-panel::-webkit-scrollbar { width: 4px; }
-.left-panel::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
-.right-panel {
-flex: 1;
-display: flex;
-flex-direction: column;
-gap: 10px;
-overflow: hidden;
-min-width: 0;
-}
-.desktop-header {
-display: block;
-}
-.mobile-header { display: none; }
-.stepper-display { display: none; }
-.stepper-input-desktop {
-display: block;
-font-size: 18px; font-weight: 700; color: var(--blue);
-width: 64px; text-align: center;
-border: none; background: transparent; outline: none;
--webkit-user-select: text; user-select: text;
-}
-.phase-amount { display: none; }
-.phase-input-desktop {
-display: block;
-flex: 1; font-size: 15px; font-weight: 700;
-border: 1.5px solid var(--border); border-radius: 8px;
-padding: 6px 8px; text-align: center;
-background: var(--bg); color: var(--text); outline: none;
--webkit-user-select: text; user-select: text;
-min-width: 0;
-}
-.phase-input-desktop:focus { border-color: var(--blue); background: var(--card); }
-.age-row-card { padding: 8px 12px; }
-.phase-card { margin-bottom: 5px; }
-.assumption-row { margin-bottom: 5px; }
-.section-label { margin: 12px 0 5px; }
-.results-grid { grid-template-columns: 1fr 1fr 1fr; }
-.result-card.wide { grid-column: auto; }
-.r-value { font-size: 18px; }
-.r-label { font-size: 11px; }
-.r-sub { font-size: 11px; }
-.milestones-grid { grid-template-columns: 1fr 1fr 1fr 1fr; }
-.chart-card { flex: 1; display: flex; flex-direction: column; overflow: hidden; max-height: 300px; }
-.chart-card canvas { flex: 1; }
-.tips-section { display: none; }
-}
+
+/* Mobile only */
 @media (max-width: 639px) {
-.left-panel, .right-panel { width: 100%; }
-.desktop-header { display: none; }
-.stepper-input-desktop { display: none; }
-.phase-input-desktop { display: none; }
-.mobile-header { display: block; margin-bottom: 4px; }
-.tips-section { display: block; }
+  .left-panel, .right-panel { width: 100%; }
+  .desktop-header { display: none; }
+  .stepper-input-desktop { display: none; }
+  .phase-input-desktop { display: none; }
+  .mobile-header { display: block; margin-bottom: 4px; }
+  .tips-section { display: block; }
 }
 </style>
+</head>
+<body>
+
 <div class="layout">
-<div class="left-panel">
-<div class="mobile-header">
-<div style="font-size:20px;font-weight:700;margin-bottom:2px;">Retirement Calculator</div>
-<div style="font-size:12px;color:var(--muted);">Adjust each stage to see your wealth grow.</div>
-</div>
-<div class="section-label">Your starting point</div>
-<div class="age-row-card highlight" style="margin-bottom:6px;">
-<label>Current age</label>
-<div class="stepper" id="stepper-start">
-<button class="stepper-btn" id="btn-start-minus">-</button>
-<span class="stepper-display" id="disp-start-age">20</span>
-<input class="stepper-input-desktop" type="number" id="input-start-age" value="20" min="18" max="70">
-<span class="stepper-unit">yrs</span>
-<button class="stepper-btn" id="btn-start-plus">+</button>
-</div>
-</div>
-<div class="age-row-card" style="margin-bottom:0;">
-<label>Retirement age</label>
-<div class="stepper" id="stepper-retire">
-<button class="stepper-btn" id="btn-retire-minus">-</button>
-<span class="stepper-display" id="disp-retire-age">65</span>
-<input class="stepper-input-desktop" type="number" id="input-retire-age" value="65" min="30" max="80">
-<span class="stepper-unit">yrs</span>
-<button class="stepper-btn" id="btn-retire-plus">+</button>
-</div>
-</div>
-<div class="section-label">Monthly investment by life stage</div>
-<div id="phases-container"></div>
-<div class="section-label">Assumptions</div>
-<div class="assumption-row">
-<label>Annual return rate</label>
-<div class="stepper">
-<button class="stepper-btn" id="btn-rate-minus">-</button>
-<span class="stepper-display" id="disp-rate">7</span>
-<input class="stepper-input-desktop" type="number" id="input-rate" value="7" min="1" max="20" step="0.5">
-<span class="stepper-unit">%</span>
-<button class="stepper-btn" id="btn-rate-plus">+</button>
-</div>
-</div>
-<div class="assumption-row">
-<label>Inflation rate</label>
-<div class="stepper">
-<button class="stepper-btn" id="btn-infl-minus">-</button>
-<span class="stepper-display" id="disp-infl">2</span>
-<input class="stepper-input-desktop" type="number" id="input-infl" value="2" min="0" max="10" step="0.5">
-<span class="stepper-unit">%</span>
-<button class="stepper-btn" id="btn-infl-plus">+</button>
-</div>
-</div>
-<div class="section-label">4% Rule</div>
-<div class="rule4-card">
-<label>Monthly expenses in retirement (today's NT$)</label>
-<div class="phase-stepper">
-<button class="stepper-btn" id="btn-exp-minus" style="border-color:var(--amber);">-</button>
-<span class="phase-amount" id="disp-expense">NT$50,000</span>
-<input class="phase-input-desktop" type="number" id="input-expense" value="50000" min="0" step="5000" style="border-color:var(--border);">
-<button class="stepper-btn" id="btn-exp-plus" style="border-color:var(--amber);">+</button>
-</div>
-<div class="phase-step-label">Step: NT$5,000</div>
-</div>
-</div>
-<div class="right-panel">
-<div class="desktop-header">
-<div style="font-size:22px;font-weight:700;letter-spacing:-0.3px;">Retirement Calculator</div>
-<div style="font-size:12px;color:var(--muted);margin-top:2px;">Adjust settings on the left to see results update in real time.</div>
-</div>
-<div class="results-grid">
-<div class="result-card wide">
-<div class="r-label">Nominal value at retirement</div>
-<div class="r-value blue" id="res-nominal">--</div>
-<div class="r-sub">Face value of your portfolio</div>
-</div>
-<div class="result-card">
-<div class="r-label">Real purchasing power (today's NT$)</div>
-<div class="r-value green" id="res-real">--</div>
-<div class="r-sub">Inflation-adjusted from today</div>
-</div>
-<div class="result-card">
-<div class="r-label">Total principal invested</div>
-<div class="r-value" id="res-principal">--</div>
-<div class="r-sub">Compounding earned you <span class="r-gain" id="res-gain"></span></div>
-</div>
-</div>
-<div class="rule4-result neutral" id="rule4-result">
-<div class="rule4-status neutral" id="rule4-status">Set monthly expenses to see 4% Rule assessment.</div>
-<div class="rule4-grid">
-<div class="rule4-item"><div class="ri-label">Target (25x annual)</div><div class="ri-val" id="r4-target">--</div></div>
-<div class="rule4-item"><div class="ri-label">Your portfolio</div><div class="ri-val" id="r4-portfolio">--</div></div>
-<div class="rule4-item"><div class="ri-label">Safe withdrawal/yr</div><div class="ri-val" id="r4-withdrawal">--</div></div>
-</div>
-<div id="r4-inflation-note" style="font-size:10px;color:var(--muted);margin-top:8px;line-height:1.5;display:none;"></div>
-<div id="r4-inflation-note" style="font-size:10px;color:var(--muted);margin-top:8px;line-height:1.5;display:none;"></div>
-</div>
-<div class="milestones-grid" id="milestones"></div>
-<div class="chart-card">
-<div class="chart-legend">
-<div class="legend-item"><div class="legend-dot" style="background:#378ADD;"></div>Portfolio</div>
-<div class="legend-item"><div class="legend-dot" style="background:#B4B2A9;"></div>Principal</div>
-<div class="legend-item"><div class="legend-dot" style="background:#E24B4A;width:14px;height:2px;border-radius:0;"></div>Real value</div>
-<div class="legend-item"><div class="legend-dot" style="background:#EF9F27;width:14px;height:2px;border-radius:0;"></div>4% target</div>
-</div>
-<canvas id="chart" role="img" aria-label="Retirement growth chart"></canvas>
-</div>
-</div>
-<div class="tips-section" style="width:100%;">
-<div class="section-label">Key principles</div>
-<div class="tip-card"><div class="tip-num" style="color:#7F77DD;">01</div><div><div class="tip-title">Start as early as possible</div><div class="tip-desc">Early contributions have the longest compounding runway. Starting 5 years earlier can mean millions more at retirement.</div></div></div>
-<div class="tip-card"><div class="tip-num" style="color:#378ADD;">02</div><div><div class="tip-title">Never stop investing</div><div class="tip-desc">Keep contributing when markets fall -- you are buying at a discount. Consistency beats timing every time.</div></div></div>
-<div class="tip-card"><div class="tip-num" style="color:#0F6E56;">03</div><div><div class="tip-title">Invest every raise</div><div class="tip-desc">Each time you get a pay rise, invest half and enjoy the other half. Your life improves and your retirement fund grows.</div></div></div>
-<div class="principle">Conservative planning: <strong>underestimate returns (6-7%)</strong> - <strong>overestimate lifespan (plan to 90)</strong> - <strong>recalibrate every 5 years</strong>.</div>
-</div>
-</div>
+
+  <!-- LEFT PANEL -->
+  <div class="left-panel">
+
+    <div class="mobile-header">
+      <div style="font-size:20px;font-weight:700;margin-bottom:2px;">Retirement Calculator</div>
+      <div style="font-size:12px;color:var(--muted);">Adjust each stage to see your wealth grow.</div>
+    </div>
+
+    <!-- Age -->
+    <div class="section-label">Your starting point</div>
+    <div class="age-row-card highlight" style="margin-bottom:6px;">
+      <label>Current age</label>
+      <div class="stepper" id="stepper-start">
+        <button class="stepper-btn" id="btn-start-minus">-</button>
+        <span class="stepper-display" id="disp-start-age">20</span>
+        <input class="stepper-input-desktop" type="number" id="input-start-age" value="20" min="18" max="70">
+        <span class="stepper-unit">yrs</span>
+        <button class="stepper-btn" id="btn-start-plus">+</button>
+      </div>
+    </div>
+    <div class="age-row-card" style="margin-bottom:0;">
+      <label>Retirement age</label>
+      <div class="stepper" id="stepper-retire">
+        <button class="stepper-btn" id="btn-retire-minus">-</button>
+        <span class="stepper-display" id="disp-retire-age">65</span>
+        <input class="stepper-input-desktop" type="number" id="input-retire-age" value="65" min="30" max="80">
+        <span class="stepper-unit">yrs</span>
+        <button class="stepper-btn" id="btn-retire-plus">+</button>
+      </div>
+    </div>
+
+    <!-- Phases -->
+    <div class="section-label">Monthly investment by life stage</div>
+    <div id="phases-container"></div>
+
+    <!-- Assumptions -->
+    <div class="section-label">Assumptions</div>
+    <div class="assumption-row">
+      <label>Annual return rate</label>
+      <div class="stepper">
+        <button class="stepper-btn" id="btn-rate-minus">-</button>
+        <span class="stepper-display" id="disp-rate">7</span>
+        <input class="stepper-input-desktop" type="number" id="input-rate" value="7" min="1" max="20" step="0.5">
+        <span class="stepper-unit">%</span>
+        <button class="stepper-btn" id="btn-rate-plus">+</button>
+      </div>
+    </div>
+    <div class="assumption-row">
+      <label>Inflation rate</label>
+      <div class="stepper">
+        <button class="stepper-btn" id="btn-infl-minus">-</button>
+        <span class="stepper-display" id="disp-infl">2</span>
+        <input class="stepper-input-desktop" type="number" id="input-infl" value="2" min="0" max="10" step="0.5">
+        <span class="stepper-unit">%</span>
+        <button class="stepper-btn" id="btn-infl-plus">+</button>
+      </div>
+    </div>
+
+    <!-- 4% Rule -->
+    <div class="section-label">4% Rule</div>
+    <div class="rule4-card">
+      <label>Monthly expenses in retirement (today's NT$)</label>
+      <div class="phase-stepper">
+        <button class="stepper-btn" id="btn-exp-minus" style="border-color:var(--amber);">-</button>
+        <span class="phase-amount" id="disp-expense">NT$50,000</span>
+        <input class="phase-input-desktop" type="number" id="input-expense" value="50000" min="0" step="5000" style="border-color:var(--border);">
+        <button class="stepper-btn" id="btn-exp-plus" style="border-color:var(--amber);">+</button>
+      </div>
+      <div class="phase-step-label">Step: NT$5,000</div>
+    </div>
+
+  </div><!-- end left-panel -->
+
+  <!-- RIGHT PANEL -->
+  <div class="right-panel">
+
+    <div class="desktop-header">
+      <div style="font-size:22px;font-weight:700;letter-spacing:-0.3px;">Retirement Calculator</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:2px;">Adjust settings on the left to see results update in real time.</div>
+    </div>
+
+    <!-- Results -->
+    <div class="results-grid">
+      <div class="result-card wide">
+        <div class="r-label">Nominal value at retirement</div>
+        <div class="r-value blue" id="res-nominal">--</div>
+        <div class="r-sub">Face value of your portfolio</div>
+      </div>
+      <div class="result-card">
+        <div class="r-label">Real purchasing power (today's NT$)</div>
+        <div class="r-value green" id="res-real">--</div>
+        <div class="r-sub">Inflation-adjusted from today</div>
+      </div>
+      <div class="result-card">
+        <div class="r-label">Total principal invested</div>
+        <div class="r-value" id="res-principal">--</div>
+        <div class="r-sub">Compounding earned you <span class="r-gain" id="res-gain"></span></div>
+      </div>
+    </div>
+
+    <!-- 4% Result -->
+    <div class="rule4-result neutral" id="rule4-result">
+      <div class="rule4-status neutral" id="rule4-status">Set monthly expenses to see 4% Rule assessment.</div>
+      <div class="rule4-grid">
+        <div class="rule4-item"><div class="ri-label">Target (25x annual)</div><div class="ri-val" id="r4-target">--</div></div>
+        <div class="rule4-item"><div class="ri-label">Your portfolio</div><div class="ri-val" id="r4-portfolio">--</div></div>
+        <div class="rule4-item"><div class="ri-label">Safe withdrawal/yr</div><div class="ri-val" id="r4-withdrawal">--</div></div>
+      </div>
+      <div id="r4-inflation-note" style="font-size:10px;color:var(--muted);margin-top:8px;line-height:1.5;display:none;"></div>
+    </div>
+
+    <!-- Milestones -->
+    <div class="milestones-grid" id="milestones"></div>
+
+    <!-- Chart -->
+    <div class="chart-card">
+      <div class="chart-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#378ADD;"></div>Portfolio</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#B4B2A9;"></div>Principal</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#E24B4A;width:14px;height:2px;border-radius:0;"></div>Real value</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#EF9F27;width:14px;height:2px;border-radius:0;"></div>4% target</div>
+      </div>
+      <canvas id="chart" role="img" aria-label="Retirement growth chart"></canvas>
+    </div>
+
+  </div><!-- end right-panel -->
+
+  <!-- Tips (mobile only) -->
+  <div class="tips-section" style="width:100%;">
+    <div class="section-label">Key principles</div>
+    <div class="tip-card"><div class="tip-num" style="color:#7F77DD;">01</div><div><div class="tip-title">Start as early as possible</div><div class="tip-desc">Early contributions have the longest compounding runway. Starting 5 years earlier can mean millions more at retirement.</div></div></div>
+    <div class="tip-card"><div class="tip-num" style="color:#378ADD;">02</div><div><div class="tip-title">Never stop investing</div><div class="tip-desc">Keep contributing when markets fall -- you are buying at a discount. Consistency beats timing every time.</div></div></div>
+    <div class="tip-card"><div class="tip-num" style="color:#0F6E56;">03</div><div><div class="tip-title">Invest every raise</div><div class="tip-desc">Each time you get a pay rise, invest half and enjoy the other half. Your life improves and your retirement fund grows.</div></div></div>
+    <div class="principle">Conservative planning: <strong>underestimate returns (6-7%)</strong> - <strong>overestimate lifespan (plan to 90)</strong> - <strong>recalibrate every 5 years</strong>.</div>
+  </div>
+
+</div><!-- end layout -->
+
 <script>
 var PHASES = [
-{ id:'p1', start:18, end:23, label:'Student',       desc:'Building the habit matters more than the amount',   color:'#7F77DD', def:3000,  step:500  },
-{ id:'p2', start:23, end:26, label:'First Job',     desc:'Income rises -- invest the difference immediately', color:'#378ADD', def:15000, step:500  },
-{ id:'p3', start:26, end:30, label:'Second Job',    desc:'Critical years for building your investment base',  color:'#1D9E75', def:20000, step:500  },
-{ id:'p4', start:30, end:40, label:'Career Growth', desc:'Every raise is an opportunity to invest more',      color:'#EF9F27', def:25000, step:1000 },
-{ id:'p5', start:40, end:50, label:'Peak Earnings', desc:'Compounding is now working hard for you',           color:'#D85A30', def:35000, step:2000 },
-{ id:'p6', start:50, end:75, label:'Final Push',    desc:'The finish line is in sight -- accelerate',         color:'#534AB7', def:40000, step:5000 }
+  { id:'p1', start:18, end:23, label:'Student',       desc:'Building the habit matters more than the amount',   color:'#7F77DD', def:3000,  step:500  },
+  { id:'p2', start:23, end:26, label:'First Job',     desc:'Income rises -- invest the difference immediately', color:'#378ADD', def:15000, step:500  },
+  { id:'p3', start:26, end:30, label:'Second Job',    desc:'Critical years for building your investment base',  color:'#1D9E75', def:20000, step:500  },
+  { id:'p4', start:30, end:40, label:'Career Growth', desc:'Every raise is an opportunity to invest more',      color:'#EF9F27', def:25000, step:1000 },
+  { id:'p5', start:40, end:50, label:'Peak Earnings', desc:'Compounding is now working hard for you',           color:'#D85A30', def:35000, step:2000 },
+  { id:'p6', start:50, end:75, label:'Final Push',    desc:'The finish line is in sight -- accelerate',         color:'#534AB7', def:40000, step:5000 }
 ];
+
 var MT = [1000000,3000000,13000000,20000000];
 var ML = ['NT$1M','NT$3M','NT$13M','NT$20M'];
 var MC = ['#7F77DD','#378ADD','#185FA5','#1D9E75'];
+
 var state = {
-startAge: 20, retireAge: 65,
-rate: 7, infl: 2, expense: 50000,
-contrib: {}
+  startAge: 20, retireAge: 65,
+  rate: 7, infl: 2, expense: 50000,
+  contrib: {}
 };
 PHASES.forEach(function(ph){ state.contrib[ph.id] = ph.def; });
+
 function fmtTWD(v) {
-if (v >= 1000000000) return 'NT$' + (v/1000000000).toFixed(2) + 'B';
-if (v >= 1000000)    return 'NT$' + (v/1000000).toFixed(2) + 'M';
-if (v >= 1000)       return 'NT$' + (v/1000).toFixed(1) + 'K';
-return 'NT$' + Math.round(v).toLocaleString();
+  if (v >= 1000000000) return 'NT$' + (v/1000000000).toFixed(2) + 'B';
+  if (v >= 1000000)    return 'NT$' + (v/1000000).toFixed(2) + 'M';
+  if (v >= 1000)       return 'NT$' + (v/1000).toFixed(1) + 'K';
+  return 'NT$' + Math.round(v).toLocaleString();
 }
 function fmtAxis(v) {
-if (v >= 1000000000) return 'NT$'+(v/1000000000).toFixed(0)+'B';
-if (v >= 1000000)    return 'NT$'+(v/1000000).toFixed(0)+'M';
-if (v >= 1000)       return 'NT$'+(v/1000).toFixed(0)+'K';
-return 'NT$'+v;
+  if (v >= 1000000000) return 'NT$'+(v/1000000000).toFixed(0)+'B';
+  if (v >= 1000000)    return 'NT$'+(v/1000000).toFixed(0)+'M';
+  if (v >= 1000)       return 'NT$'+(v/1000).toFixed(0)+'K';
+  return 'NT$'+v;
 }
 function fmtAmt(v) { return 'NT$' + Math.round(v).toLocaleString(); }
+
 // ---- Build phase cards ----
 var container = document.getElementById('phases-container');
 PHASES.forEach(function(ph) {
-var div = document.createElement('div');
-div.className = 'phase-card';
-div.id = 'card-' + ph.id;
-div.style.borderLeftColor = ph.color;
-div.innerHTML =
-'<div class="phase-top">' +
-'<div><div class="phase-title" id="title-'+ph.id+'">Age '+ph.start+'-'+ph.end+' - '+ph.label+'</div>' +
-'<div class="phase-desc">'+ph.desc+'</div></div>' +
-'<span class="phase-badge" id="badge-'+ph.id+'" style="background:'+ph.color+'22;color:'+ph.color+';">upcoming</span>' +
-'</div>' +
-'<div class="phase-stepper">' +
-'<button class="stepper-btn" id="btn-'+ph.id+'-minus" style="border-color:'+ph.color+';">-</button>' +
-'<span class="phase-amount" id="amt-'+ph.id+'">'+fmtAmt(ph.def)+'</span>' +
-(window.innerWidth>=640?'<input class="phase-input-desktop" type="number" id="input-'+ph.id+'" value="'+ph.def+'" min="0" step="'+ph.step+'">':'') +
-'<button class="stepper-btn" id="btn-'+ph.id+'-plus" style="border-color:'+ph.color+';">+</button>' +
-'</div>' +
-'<div class="phase-step-label">Step: NT$'+ph.step.toLocaleString()+' per tap</div>';
-container.appendChild(div);
-// Desktop input listener
-document.getElementById('input-'+ph.id).addEventListener('input', function() {
-var val = Math.max(0, parseFloat(this.value) || 0);
-state.contrib[ph.id] = val;
-document.getElementById('amt-'+ph.id).textContent = fmtAmt(val);
-calculate();
+  var div = document.createElement('div');
+  div.className = 'phase-card';
+  div.id = 'card-' + ph.id;
+  div.style.borderLeftColor = ph.color;
+  div.innerHTML =
+    '<div class="phase-top">' +
+      '<div><div class="phase-title" id="title-'+ph.id+'">Age '+ph.start+'-'+ph.end+' - '+ph.label+'</div>' +
+      '<div class="phase-desc">'+ph.desc+'</div></div>' +
+      '<span class="phase-badge" id="badge-'+ph.id+'" style="background:'+ph.color+'22;color:'+ph.color+';">upcoming</span>' +
+    '</div>' +
+    '<div class="phase-stepper">' +
+      '<button class="stepper-btn" id="btn-'+ph.id+'-minus" style="border-color:'+ph.color+';">-</button>' +
+      '<span class="phase-amount" id="amt-'+ph.id+'">'+fmtAmt(ph.def)+'</span>' +
+      '<input class="phase-input-desktop" type="number" id="input-'+ph.id+'" value="'+ph.def+'" min="0" step="'+ph.step+'">' +
+      '<button class="stepper-btn" id="btn-'+ph.id+'-plus" style="border-color:'+ph.color+';">+</button>' +
+    '</div>' +
+    '<div class="phase-step-label">Step: NT$'+ph.step.toLocaleString()+' per tap</div>';
+  container.appendChild(div);
+
+  // Desktop input listener
+  document.getElementById('input-'+ph.id).addEventListener('input', function() {
+    var val = Math.max(0, parseFloat(this.value) || 0);
+    state.contrib[ph.id] = val;
+    document.getElementById('amt-'+ph.id).textContent = fmtAmt(val);
+    calculate();
+  });
+
+  // Long press for phase buttons
+  setupLongPress('btn-'+ph.id+'-minus', function(){ adjustPhase(ph.id, -ph.step); });
+  setupLongPress('btn-'+ph.id+'-plus',  function(){ adjustPhase(ph.id,  ph.step); });
 });
-// Long press for phase buttons
-setupLongPress('btn-'+ph.id+'-minus', function(){ adjustPhase(ph.id, -ph.step); });
-setupLongPress('btn-'+ph.id+'-plus',  function(){ adjustPhase(ph.id,  ph.step); });
-});
+
 function adjustPhase(id, delta) {
-state.contrib[id] = Math.max(0, state.contrib[id] + delta);
-var ph = PHASES.find(function(p){ return p.id === id; });
-document.getElementById('amt-'+ph.id).textContent = fmtAmt(state.contrib[id]);
-var inp = document.getElementById('input-'+ph.id);
-if (inp) inp.value = state.contrib[id];
-calculate();
+  state.contrib[id] = Math.max(0, state.contrib[id] + delta);
+  var ph = PHASES.find(function(p){ return p.id === id; });
+  document.getElementById('amt-'+ph.id).textContent = fmtAmt(state.contrib[id]);
+  var inp = document.getElementById('input-'+ph.id);
+  if (inp) inp.value = state.contrib[id];
+  calculate();
 }
+
 // ---- Long press logic ----
 function setupLongPress(btnId, action) {
-var btn = document.getElementById(btnId);
-if (!btn) return;
-var interval = null;
-var timeout = null;
-function start(e) {
-e.preventDefault();
-action();
-timeout = setTimeout(function() {
-interval = setInterval(action, 80);
-}, 400);
+  var btn = document.getElementById(btnId);
+  if (!btn) return;
+  var interval = null;
+  var timeout = null;
+
+  function start(e) {
+    e.preventDefault();
+    action();
+    timeout = setTimeout(function() {
+      interval = setInterval(action, 80);
+    }, 400);
+  }
+  function stop() {
+    clearTimeout(timeout);
+    clearInterval(interval);
+    timeout = null; interval = null;
+  }
+
+  btn.addEventListener('mousedown', start);
+  btn.addEventListener('touchstart', start, { passive: false });
+  btn.addEventListener('mouseup', stop);
+  btn.addEventListener('mouseleave', stop);
+  btn.addEventListener('touchend', stop);
+  btn.addEventListener('touchcancel', stop);
 }
-function stop() {
-clearTimeout(timeout);
-clearInterval(interval);
-timeout = null; interval = null;
-}
-btn.addEventListener('mousedown', start);
-btn.addEventListener('touchstart', start, { passive: false });
-btn.addEventListener('mouseup', stop);
-btn.addEventListener('mouseleave', stop);
-btn.addEventListener('touchend', stop);
-btn.addEventListener('touchcancel', stop);
-}
+
 // ---- Age buttons ----
 setupLongPress('btn-start-minus', function(){ adjustAge('start', -1); });
 setupLongPress('btn-start-plus',  function(){ adjustAge('start',  1); });
 setupLongPress('btn-retire-minus', function(){ adjustAge('retire', -1); });
 setupLongPress('btn-retire-plus',  function(){ adjustAge('retire',  1); });
+
 function adjustAge(which, delta) {
-if (which === 'start') {
-state.startAge = Math.max(18, Math.min(70, state.startAge + delta));
-if (state.retireAge <= state.startAge + 4) state.retireAge = state.startAge + 5;
-document.getElementById('disp-start-age').textContent = state.startAge;
-document.getElementById('input-start-age').value = state.startAge;
-document.getElementById('disp-retire-age').textContent = state.retireAge;
-document.getElementById('input-retire-age').value = state.retireAge;
-} else {
-state.retireAge = Math.max(state.startAge + 5, Math.min(80, state.retireAge + delta));
-document.getElementById('disp-retire-age').textContent = state.retireAge;
-document.getElementById('input-retire-age').value = state.retireAge;
+  if (which === 'start') {
+    state.startAge = Math.max(18, Math.min(70, state.startAge + delta));
+    if (state.retireAge <= state.startAge + 4) state.retireAge = state.startAge + 5;
+    document.getElementById('disp-start-age').textContent = state.startAge;
+    document.getElementById('input-start-age').value = state.startAge;
+    document.getElementById('disp-retire-age').textContent = state.retireAge;
+    document.getElementById('input-retire-age').value = state.retireAge;
+  } else {
+    state.retireAge = Math.max(state.startAge + 5, Math.min(80, state.retireAge + delta));
+    document.getElementById('disp-retire-age').textContent = state.retireAge;
+    document.getElementById('input-retire-age').value = state.retireAge;
+  }
+  calculate();
 }
-calculate();
-}
+
 document.getElementById('input-start-age').addEventListener('change', function() {
-state.startAge = Math.max(18, Math.min(70, parseInt(this.value) || 20));
-if (state.retireAge <= state.startAge + 4) state.retireAge = state.startAge + 5;
-document.getElementById('disp-start-age').textContent = state.startAge;
-document.getElementById('disp-retire-age').textContent = state.retireAge;
-document.getElementById('input-retire-age').value = state.retireAge;
-calculate();
+  state.startAge = Math.max(18, Math.min(70, parseInt(this.value) || 20));
+  if (state.retireAge <= state.startAge + 4) state.retireAge = state.startAge + 5;
+  document.getElementById('disp-start-age').textContent = state.startAge;
+  document.getElementById('disp-retire-age').textContent = state.retireAge;
+  document.getElementById('input-retire-age').value = state.retireAge;
+  calculate();
 });
 document.getElementById('input-retire-age').addEventListener('change', function() {
-state.retireAge = Math.max(state.startAge + 5, Math.min(80, parseInt(this.value) || 65));
-document.getElementById('disp-retire-age').textContent = state.retireAge;
-calculate();
+  state.retireAge = Math.max(state.startAge + 5, Math.min(80, parseInt(this.value) || 65));
+  document.getElementById('disp-retire-age').textContent = state.retireAge;
+  calculate();
 });
+
 // ---- Rate / Inflation buttons ----
 setupLongPress('btn-rate-minus', function(){ adjustSetting('rate', -0.5, 1, 20); });
 setupLongPress('btn-rate-plus',  function(){ adjustSetting('rate',  0.5, 1, 20); });
 setupLongPress('btn-infl-minus', function(){ adjustSetting('infl', -0.5, 0, 10); });
 setupLongPress('btn-infl-plus',  function(){ adjustSetting('infl',  0.5, 0, 10); });
+
 function adjustSetting(key, delta, mn, mx) {
-state[key] = Math.round((Math.max(mn, Math.min(mx, state[key] + delta))) * 10) / 10;
-document.getElementById('disp-'+key).textContent = state[key];
-document.getElementById('input-'+key).value = state[key];
-calculate();
+  state[key] = Math.round((Math.max(mn, Math.min(mx, state[key] + delta))) * 10) / 10;
+  document.getElementById('disp-'+key).textContent = state[key];
+  document.getElementById('input-'+key).value = state[key];
+  calculate();
 }
 document.getElementById('input-rate').addEventListener('input', function() {
-state.rate = Math.max(1, Math.min(20, parseFloat(this.value) || 7));
-document.getElementById('disp-rate').textContent = state.rate;
-calculate();
+  state.rate = Math.max(1, Math.min(20, parseFloat(this.value) || 7));
+  document.getElementById('disp-rate').textContent = state.rate;
+  calculate();
 });
 document.getElementById('input-infl').addEventListener('input', function() {
-state.infl = Math.max(0, Math.min(10, parseFloat(this.value) || 2));
-document.getElementById('disp-infl').textContent = state.infl;
-calculate();
+  state.infl = Math.max(0, Math.min(10, parseFloat(this.value) || 2));
+  document.getElementById('disp-infl').textContent = state.infl;
+  calculate();
 });
+
 // ---- Expense buttons ----
 setupLongPress('btn-exp-minus', function(){ adjustExpense(-5000); });
 setupLongPress('btn-exp-plus',  function(){ adjustExpense( 5000); });
+
 function adjustExpense(delta) {
-state.expense = Math.max(0, state.expense + delta);
-document.getElementById('disp-expense').textContent = fmtAmt(state.expense);
-document.getElementById('input-expense').value = state.expense;
-calculate();
+  state.expense = Math.max(0, state.expense + delta);
+  document.getElementById('disp-expense').textContent = fmtAmt(state.expense);
+  document.getElementById('input-expense').value = state.expense;
+  calculate();
 }
 document.getElementById('input-expense').addEventListener('input', function() {
-state.expense = Math.max(0, parseFloat(this.value) || 0);
-document.getElementById('disp-expense').textContent = fmtAmt(state.expense);
-calculate();
+  state.expense = Math.max(0, parseFloat(this.value) || 0);
+  document.getElementById('disp-expense').textContent = fmtAmt(state.expense);
+  calculate();
 });
+
 // ---- Phase visibility ----
 function updatePhases() {
-PHASES.forEach(function(ph) {
-var card  = document.getElementById('card-'+ph.id);
-var badge = document.getElementById('badge-'+ph.id);
-var title = document.getElementById('title-'+ph.id);
-var phEnd   = ph.id === 'p6' ? state.retireAge : ph.end;
-var phStart = Math.max(ph.start, state.startAge);
-if (ph.end <= state.startAge || ph.start >= state.retireAge || phStart >= phEnd) {
-card.classList.remove('visible','inactive'); return;
+  PHASES.forEach(function(ph) {
+    var card  = document.getElementById('card-'+ph.id);
+    var badge = document.getElementById('badge-'+ph.id);
+    var title = document.getElementById('title-'+ph.id);
+    var phEnd   = ph.id === 'p6' ? state.retireAge : ph.end;
+    var phStart = Math.max(ph.start, state.startAge);
+    if (ph.end <= state.startAge || ph.start >= state.retireAge || phStart >= phEnd) {
+      card.classList.remove('visible','inactive'); return;
+    }
+    title.textContent = 'Age '+phStart+'-'+phEnd+' - '+ph.label;
+    card.classList.add('visible');
+    if (state.startAge > ph.start && state.startAge < ph.end) {
+      badge.textContent = 'you are here'; badge.style.display = '';
+      card.classList.remove('inactive');
+    } else if (state.startAge <= ph.start) {
+      badge.textContent = 'upcoming'; badge.style.display = '';
+      card.classList.remove('inactive');
+    } else { card.classList.remove('visible'); }
+  });
 }
-title.textContent = 'Age '+phStart+'-'+phEnd+' - '+ph.label;
-card.classList.add('visible');
-if (state.startAge > ph.start && state.startAge < ph.end) {
-badge.textContent = 'you are here'; badge.style.display = '';
-card.classList.remove('inactive');
-} else if (state.startAge <= ph.start) {
-badge.textContent = 'upcoming'; badge.style.display = '';
-card.classList.remove('inactive');
-} else { card.classList.remove('visible'); }
-});
-}
+
 function getPmt(age) {
-for (var i=0; i<PHASES.length; i++) {
-if (age >= PHASES[i].start && age < PHASES[i].end) return state.contrib[PHASES[i].id];
+  for (var i=0; i<PHASES.length; i++) {
+    if (age >= PHASES[i].start && age < PHASES[i].end) return state.contrib[PHASES[i].id];
+  }
+  return 0;
 }
-return 0;
-}
+
 // ---- Chart ----
 function drawChart(labels, nominal, principal, real, r4target) {
-var canvas = document.getElementById('chart');
-var dpr = window.devicePixelRatio || 1;
-var W = canvas.parentElement.clientWidth - 24;
-var H = canvas.parentElement.clientHeight
-? canvas.parentElement.clientHeight - 60
-: Math.min(240, Math.max(160, W * 0.4));
-H = Math.max(120, H);
-canvas.width  = W * dpr;
-canvas.height = H * dpr;
-canvas.style.width  = W + 'px';
-canvas.style.height = H + 'px';
-var ctx = canvas.getContext('2d');
-ctx.scale(dpr, dpr);
-var pL=54, pR=8, pT=8, pB=28;
-var cW=W-pL-pR, cH=H-pT-pB;
-var allVals = nominal.concat(r4target > 0 ? [r4target] : []);
-var maxVal = Math.max.apply(null, allVals) * 1.08;
-function xp(i){ return pL+(i/(labels.length-1))*cW; }
-function yp(v){ return pT+cH-(v/maxVal)*cH; }
-ctx.font = '9px Helvetica Neue, Arial, sans-serif';
-for (var g=0; g<=4; g++) {
-var gv=maxVal/4*g, gy=yp(gv);
-ctx.strokeStyle='rgba(0,0,0,0.06)'; ctx.lineWidth=1; ctx.setLineDash([]);
-ctx.beginPath(); ctx.moveTo(pL,gy); ctx.lineTo(W-pR,gy); ctx.stroke();
-ctx.fillStyle='#aaa'; ctx.textAlign='right';
-ctx.fillText(fmtAxis(Math.round(gv)), pL-4, gy+3);
+  var canvas = document.getElementById('chart');
+  var dpr = window.devicePixelRatio || 1;
+  var W = canvas.parentElement.clientWidth - 24;
+  var H = canvas.parentElement.clientHeight
+        ? canvas.parentElement.clientHeight - 60
+        : Math.min(240, Math.max(160, W * 0.4));
+  H = Math.max(120, H);
+  canvas.width  = W * dpr;
+  canvas.height = H * dpr;
+  canvas.style.width  = W + 'px';
+  canvas.style.height = H + 'px';
+  var ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+
+  var pL=54, pR=8, pT=8, pB=28;
+  var cW=W-pL-pR, cH=H-pT-pB;
+  var allVals = nominal.concat(r4target > 0 ? [r4target] : []);
+  var maxVal = Math.max.apply(null, allVals) * 1.08;
+
+  function xp(i){ return pL+(i/(labels.length-1))*cW; }
+  function yp(v){ return pT+cH-(v/maxVal)*cH; }
+
+  ctx.font = '9px Helvetica Neue, Arial, sans-serif';
+  for (var g=0; g<=4; g++) {
+    var gv=maxVal/4*g, gy=yp(gv);
+    ctx.strokeStyle='rgba(0,0,0,0.06)'; ctx.lineWidth=1; ctx.setLineDash([]);
+    ctx.beginPath(); ctx.moveTo(pL,gy); ctx.lineTo(W-pR,gy); ctx.stroke();
+    ctx.fillStyle='#aaa'; ctx.textAlign='right';
+    ctx.fillText(fmtAxis(Math.round(gv)), pL-4, gy+3);
+  }
+  ctx.fillStyle='#aaa'; ctx.textAlign='center';
+  var step=Math.ceil(labels.length/(W>400?8:5));
+  for (var li=0;li<labels.length;li++) {
+    if (li%step===0||li===labels.length-1) ctx.fillText(labels[li], xp(li), H-pB+12);
+  }
+
+  ctx.beginPath(); ctx.moveTo(xp(0),yp(nominal[0]));
+  for (var ni=1;ni<nominal.length;ni++) ctx.lineTo(xp(ni),yp(nominal[ni]));
+  ctx.lineTo(xp(nominal.length-1),H-pB); ctx.lineTo(xp(0),H-pB); ctx.closePath();
+  ctx.fillStyle='rgba(55,138,221,0.09)'; ctx.fill();
+
+  if (r4target>0) {
+    ctx.beginPath(); ctx.setLineDash([6,4]);
+    ctx.strokeStyle='#EF9F27'; ctx.lineWidth=1.5;
+    ctx.moveTo(pL,yp(r4target)); ctx.lineTo(W-pR,yp(r4target)); ctx.stroke();
+  }
+  ctx.beginPath(); ctx.setLineDash([5,4]);
+  ctx.strokeStyle='#C0BEB8'; ctx.lineWidth=1.5;
+  for (var pi=0;pi<principal.length;pi++) { pi===0?ctx.moveTo(xp(pi),yp(principal[pi])):ctx.lineTo(xp(pi),yp(principal[pi])); }
+  ctx.stroke();
+  ctx.beginPath(); ctx.setLineDash([6,4]);
+  ctx.strokeStyle='#E24B4A'; ctx.lineWidth=1.5;
+  for (var ri=0;ri<real.length;ri++) { ri===0?ctx.moveTo(xp(ri),yp(real[ri])):ctx.lineTo(xp(ri),yp(real[ri])); }
+  ctx.stroke();
+  ctx.beginPath(); ctx.setLineDash([]);
+  ctx.strokeStyle='#378ADD'; ctx.lineWidth=2.5;
+  for (var xi=0;xi<nominal.length;xi++) { xi===0?ctx.moveTo(xp(xi),yp(nominal[xi])):ctx.lineTo(xp(xi),yp(nominal[xi])); }
+  ctx.stroke();
 }
-ctx.fillStyle='#aaa'; ctx.textAlign='center';
-var step=Math.ceil(labels.length/(W>400?8:5));
-for (var li=0;li<labels.length;li++) {
-if (li%step===0||li===labels.length-1) ctx.fillText(labels[li], xp(li), H-pB+12);
-}
-ctx.beginPath(); ctx.moveTo(xp(0),yp(nominal[0]));
-for (var ni=1;ni<nominal.length;ni++) ctx.lineTo(xp(ni),yp(nominal[ni]));
-ctx.lineTo(xp(nominal.length-1),H-pB); ctx.lineTo(xp(0),H-pB); ctx.closePath();
-ctx.fillStyle='rgba(55,138,221,0.09)'; ctx.fill();
-if (r4target>0) {
-ctx.beginPath(); ctx.setLineDash([6,4]);
-ctx.strokeStyle='#EF9F27'; ctx.lineWidth=1.5;
-ctx.moveTo(pL,yp(r4target)); ctx.lineTo(W-pR,yp(r4target)); ctx.stroke();
-}
-ctx.beginPath(); ctx.setLineDash([5,4]);
-ctx.strokeStyle='#C0BEB8'; ctx.lineWidth=1.5;
-for (var pi=0;pi<principal.length;pi++) { pi===0?ctx.moveTo(xp(pi),yp(principal[pi])):ctx.lineTo(xp(pi),yp(principal[pi])); }
-ctx.stroke();
-ctx.beginPath(); ctx.setLineDash([6,4]);
-ctx.strokeStyle='#E24B4A'; ctx.lineWidth=1.5;
-for (var ri=0;ri<real.length;ri++) { ri===0?ctx.moveTo(xp(ri),yp(real[ri])):ctx.lineTo(xp(ri),yp(real[ri])); }
-ctx.stroke();
-ctx.beginPath(); ctx.setLineDash([]);
-ctx.strokeStyle='#378ADD'; ctx.lineWidth=2.5;
-for (var xi=0;xi<nominal.length;xi++) { xi===0?ctx.moveTo(xp(xi),yp(nominal[xi])):ctx.lineTo(xp(xi),yp(nominal[xi])); }
-ctx.stroke();
-}
+
 // ---- Main calculate ----
 function calculate() {
-updatePhases();
-var sa=state.startAge, ra=state.retireAge;
-if (sa >= ra) return;
-var r=state.rate/100/12, inflR=state.infl/100;
-var totalMonths=(ra-sa)*12;
-var labels=[], nomVals=[], prinVals=[], realVals=[];
-var milHit={};
-var bal=0, prin=0;
-for (var m=1;m<=totalMonths;m++) {
-var age=sa+m/12, pmt=getPmt(age);
-bal=bal*(1+r)+pmt; prin+=pmt;
-MT.forEach(function(mt,i){ if(!milHit[i]&&bal>=mt) milHit[i]=age; });
-var intv=totalMonths<=60?1:totalMonths<=120?3:6;
-if (m%intv===0||m===totalMonths) {
-labels.push('Age '+Math.floor(age));
-nomVals.push(Math.round(bal));
-prinVals.push(Math.round(prin));
-realVals.push(Math.round(bal/Math.pow(1+inflR,m/12)));
+  updatePhases();
+  var sa=state.startAge, ra=state.retireAge;
+  if (sa >= ra) return;
+
+  var r=state.rate/100/12, inflR=state.infl/100;
+  var totalMonths=(ra-sa)*12;
+  var labels=[], nomVals=[], prinVals=[], realVals=[];
+  var milHit={};
+  var bal=0, prin=0;
+
+  for (var m=1;m<=totalMonths;m++) {
+    var age=sa+m/12, pmt=getPmt(age);
+    bal=bal*(1+r)+pmt; prin+=pmt;
+    MT.forEach(function(mt,i){ if(!milHit[i]&&bal>=mt) milHit[i]=age; });
+    var intv=totalMonths<=60?1:totalMonths<=120?3:6;
+    if (m%intv===0||m===totalMonths) {
+      labels.push('Age '+Math.floor(age));
+      nomVals.push(Math.round(bal));
+      prinVals.push(Math.round(prin));
+      realVals.push(Math.round(bal/Math.pow(1+inflR,m/12)));
+    }
+  }
+
+  var fNom=nomVals[nomVals.length-1];
+  var fReal=realVals[realVals.length-1];
+  var fPrin=prinVals[prinVals.length-1];
+
+  document.getElementById('res-nominal').textContent  = fmtTWD(fNom);
+  document.getElementById('res-real').textContent     = fmtTWD(fReal);
+  document.getElementById('res-principal').textContent= fmtTWD(fPrin);
+  document.getElementById('res-gain').textContent     = '+'+fmtTWD(fNom-fPrin);
+
+  // Milestones
+  var milDiv=document.getElementById('milestones');
+  milDiv.innerHTML='';
+  MT.forEach(function(mt,i) {
+    var age=milHit[i]; if (!age) return;
+    var pill=document.createElement('div');
+    pill.className='milestone-pill';
+    pill.innerHTML='<div class="m-target" style="color:'+MC[i]+'">'+ML[i]+'</div><div class="m-age">Age '+age.toFixed(1)+'</div>';
+    milDiv.appendChild(pill);
+  });
+
+  // 4% rule
+  var exp=state.expense;
+  var years=ra-sa;
+  var inflFactor=Math.pow(1+inflR, years);
+  var inflatedMonthly=Math.round(exp*inflFactor);
+  var inflatedAnnual=inflatedMonthly*12;
+  var r4target=inflatedAnnual*25;
+  var safeW=fNom*0.04;
+  var gap=r4target-fNom;
+
+  document.getElementById('r4-target').textContent    = fmtTWD(Math.round(r4target));
+  document.getElementById('r4-portfolio').textContent = fmtTWD(fNom);
+  document.getElementById('r4-withdrawal').textContent= fmtTWD(Math.round(safeW))+' / yr';
+
+  var note=document.getElementById('r4-inflation-note');
+  var res=document.getElementById('rule4-result');
+  var sta=document.getElementById('rule4-status');
+  if (exp===0) {
+    res.className='rule4-result neutral'; sta.className='rule4-status neutral';
+    sta.textContent='Set monthly expenses to see 4% Rule assessment.';
+    note.style.display='none';
+  } else if (fNom>=r4target) {
+    res.className='rule4-result on-track'; sta.className='rule4-status on-track';
+    sta.textContent='On track -- exceeds 4% target by '+fmtTWD(Math.round(-gap))+'.';
+    note.style.display='block';
+    note.textContent='Target is inflation-adjusted: '+fmtAmt(exp)+'/mo today = '+fmtAmt(inflatedMonthly)+'/mo at retirement ('+state.infl+'% inflation, '+years+' years).';
+  } else {
+    res.className='rule4-result off-track'; sta.className='rule4-status off-track';
+    sta.textContent='Gap of '+fmtTWD(Math.round(gap))+' -- invest more or retire later.';
+    note.style.display='block';
+    note.textContent='Target is inflation-adjusted: '+fmtAmt(exp)+'/mo today = '+fmtAmt(inflatedMonthly)+'/mo at retirement ('+state.infl+'% inflation, '+years+' years).';
+  }
+
+  drawChart(labels, nomVals, prinVals, realVals, exp>0?r4target:0);
 }
-}
-var fNom=nomVals[nomVals.length-1];
-var fReal=realVals[realVals.length-1];
-var fPrin=prinVals[prinVals.length-1];
-document.getElementById('res-nominal').textContent  = fmtTWD(fNom);
-document.getElementById('res-real').textContent     = fmtTWD(fReal);
-document.getElementById('res-principal').textContent= fmtTWD(fPrin);
-document.getElementById('res-gain').textContent     = '+'+fmtTWD(fNom-fPrin);
-// Milestones
-var milDiv=document.getElementById('milestones');
-milDiv.innerHTML='';
-MT.forEach(function(mt,i) {
-var age=milHit[i]; if (!age) return;
-var pill=document.createElement('div');
-pill.className='milestone-pill';
-pill.innerHTML='<div class="m-target" style="color:'+MC[i]+'">'+ML[i]+'</div><div class="m-age">Age '+age.toFixed(1)+'</div>';
-milDiv.appendChild(pill);
-});
-// 4% rule
-var exp=state.expense;
-var years=ra-sa;
-var inflFactor=Math.pow(1+inflR, years);
-var inflatedMonthly=Math.round(exp*inflFactor);
-var inflatedAnnual=inflatedMonthly*12;
-var r4target=inflatedAnnual*25;
-var safeW=fNom*0.04;
-var gap=r4target-fNom;
-document.getElementById('r4-target').textContent    = fmtTWD(Math.round(r4target));
-document.getElementById('r4-portfolio').textContent = fmtTWD(fNom);
-document.getElementById('r4-withdrawal').textContent= fmtTWD(Math.round(safeW))+' / yr';
-var note=document.getElementById('r4-inflation-note');
-var res=document.getElementById('rule4-result');
-var sta=document.getElementById('rule4-status');
-if (exp===0) {
-res.className='rule4-result neutral'; sta.className='rule4-status neutral';
-sta.textContent='Set monthly expenses to see 4% Rule assessment.';
-note.style.display='none';
-} else if (fNom>=r4target) {
-res.className='rule4-result on-track'; sta.className='rule4-status on-track';
-sta.textContent='On track -- exceeds 4% target by '+fmtTWD(Math.round(-gap))+'.';
-note.style.display='block';
-note.textContent='Target is inflation-adjusted: '+fmtAmt(exp)+'/mo today = '+fmtAmt(inflatedMonthly)+'/mo at retirement ('+state.infl+'% inflation, '+years+' years).';
-} else {
-res.className='rule4-result off-track'; sta.className='rule4-status off-track';
-sta.textContent='Gap of '+fmtTWD(Math.round(gap))+' -- invest more or retire later.';
-note.style.display='block';
-note.textContent='Target is inflation-adjusted: '+fmtAmt(exp)+'/mo today = '+fmtAmt(inflatedMonthly)+'/mo at retirement ('+state.infl+'% inflation, '+years+' years).';
-}
-drawChart(labels, nomVals, prinVals, realVals, exp>0?r4target:0);
-}
+
 function reportHeight() {
-var h = document.body.scrollHeight;
-window.parent.postMessage({ type: 'setHeight', height: h }, '*');
+  var h = document.body.scrollHeight;
+  window.parent.postMessage({ type: 'setHeight', height: h }, '*');
 }
 var ro = new ResizeObserver(function(){ reportHeight(); });
 ro.observe(document.body);
+
 calculate();
 window.addEventListener('resize', calculate);
 </script>
+</body>
+</html>
