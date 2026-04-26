@@ -275,14 +275,14 @@ canvas { display: block; width: 100%; touch-action: none; pointer-events: none; 
 @media (max-width: 639px) {
   .left-panel, .right-panel { width: 100%; }
   .desktop-header { display: none; }
-  .stepper-input-desktop { display: block; width: 44px; font-size: 15px; }
-  .phase-input-desktop { display: block; width: 90px; flex: none; font-size: 13px; }
-  .stepper-display { display: none; }
-  .phase-amount { display: none; }
+  .stepper-input-desktop { display: none; }
+  .phase-input-desktop { display: none; }
+  .stepper-display { display: block; }
+  .phase-amount { display: block; }
   .mobile-header { display: block; margin-bottom: 4px; }
   .tips-section { display: block; }
   .phase-stepper { gap: 3px; }
-  .stepper-btn { width: 34px; height: 34px; font-size: 18px; }
+  .stepper-btn { width: 44px; height: 44px; font-size: 20px; }
   .phase-card { padding: 10px 8px; }
   .layout { padding: 12px 8px; }
   .age-row-card { padding: 8px 10px; }
@@ -352,17 +352,45 @@ canvas { display: block; width: 100%; touch-action: none; pointer-events: none; 
       </div>
     </div>
 
-    <!-- 4% Rule -->
-    <div class="section-label">4% Rule</div>
-    <div class="rule4-card">
-      <label>Monthly expenses in retirement (today's NT$)</label>
-      <div class="phase-stepper">
-        <button class="stepper-btn" id="btn-exp-minus" style="border-color:var(--amber);">-</button>
-        <span class="phase-amount" id="disp-expense">NT$50,000</span>
-        <input class="phase-input-desktop" type="number" id="input-expense" value="50000" min="0" step="5000" style="border-color:var(--border);">
-        <button class="stepper-btn" id="btn-exp-plus" style="border-color:var(--amber);">+</button>
+    <!-- Withdrawal Planner -->
+    <div class="section-label" style="display:flex;align-items:center;justify-content:space-between;">
+      <span>Withdrawal Planner</span>
+      <label style="display:flex;align-items:center;gap:6px;font-size:11px;font-weight:400;text-transform:none;letter-spacing:0;cursor:pointer;">
+        <input type="checkbox" id="withdrawal-toggle" style="width:16px;height:16px;cursor:pointer;display:block;">
+        <span id="toggle-label">Off</span>
+      </label>
+    </div>
+    <div id="withdrawal-panel" style="display:none;">
+      <div class="assumption-row" style="margin-bottom:6px;">
+        <label>Post-retirement yield (%/yr)</label>
+        <div class="stepper">
+          <button class="stepper-btn" id="btn-yield-minus" style="border-color:var(--amber);">-</button>
+          <span class="stepper-display" id="disp-yield">5</span>
+          <input class="stepper-input-desktop" type="number" id="input-yield" value="5" min="0" max="20" step="0.5">
+          <span class="stepper-unit">%</span>
+          <button class="stepper-btn" id="btn-yield-plus" style="border-color:var(--amber);">+</button>
+        </div>
       </div>
-      <div class="phase-step-label">Step: NT$5,000</div>
+      <div class="assumption-row" style="margin-bottom:6px;">
+        <label>Start withdrawing at age</label>
+        <div class="stepper">
+          <button class="stepper-btn" id="btn-wdage-minus" style="border-color:var(--amber);">-</button>
+          <span class="stepper-display" id="disp-wdage">65</span>
+          <input class="stepper-input-desktop" type="number" id="input-wdage" value="65" min="30" max="90">
+          <span class="stepper-unit">yrs</span>
+          <button class="stepper-btn" id="btn-wdage-plus" style="border-color:var(--amber);">+</button>
+        </div>
+      </div>
+      <div class="assumption-row">
+        <label>I expect to live until age</label>
+        <div class="stepper">
+          <button class="stepper-btn" id="btn-life-minus" style="border-color:var(--amber);">-</button>
+          <span class="stepper-display" id="disp-life">85</span>
+          <input class="stepper-input-desktop" type="number" id="input-life" value="85" min="50" max="110">
+          <span class="stepper-unit">yrs</span>
+          <button class="stepper-btn" id="btn-life-plus" style="border-color:var(--amber);">+</button>
+        </div>
+      </div>
     </div>
 
   </div><!-- end left-panel -->
@@ -394,15 +422,14 @@ canvas { display: block; width: 100%; touch-action: none; pointer-events: none; 
       </div>
     </div>
 
-    <!-- 4% Result -->
-    <div class="rule4-result neutral" id="rule4-result">
-      <div class="rule4-status neutral" id="rule4-status">Set monthly expenses to see 4% Rule assessment.</div>
-      <div class="rule4-grid">
-        <div class="rule4-item"><div class="ri-label">Target (25x annual)</div><div class="ri-val" id="r4-target">--</div></div>
-        <div class="rule4-item"><div class="ri-label">Your portfolio</div><div class="ri-val" id="r4-portfolio">--</div></div>
-        <div class="rule4-item"><div class="ri-label">Safe withdrawal/yr</div><div class="ri-val" id="r4-withdrawal">--</div></div>
+    <!-- Withdrawal Result -->
+    <div id="withdrawal-result" style="display:none;" class="rule4-result neutral">
+      <div id="wd-status" class="rule4-status neutral">--</div>
+      <div class="rule4-grid" style="grid-template-columns:1fr 1fr 1fr;">
+        <div class="rule4-item"><div class="ri-label">Annual withdrawal</div><div class="ri-val" id="wd-annual">--</div></div>
+        <div class="rule4-item"><div class="ri-label">Monthly withdrawal</div><div class="ri-val" id="wd-monthly">--</div></div>
+        <div class="rule4-item"><div class="ri-label">Portfolio at withdrawal start</div><div class="ri-val" id="wd-portfolio">--</div></div>
       </div>
-      <div id="r4-inflation-note" style="font-size:10px;color:var(--muted);margin-top:8px;line-height:1.5;display:none;"></div>
     </div>
 
     <!-- Milestones -->
@@ -448,7 +475,8 @@ var MC = ['#7F77DD','#378ADD','#185FA5','#1D9E75'];
 
 var state = {
   startAge: 20, retireAge: 65,
-  rate: 7, infl: 2, expense: 50000,
+  rate: 7, infl: 2,
+  wdOn: false, wdYield: 5, wdAge: 65, lifeAge: 85,
   contrib: {}
 };
 PHASES.forEach(function(ph){ state.contrib[ph.id] = ph.def; });
@@ -598,20 +626,40 @@ document.getElementById('input-infl').addEventListener('input', function() {
   calculate();
 });
 
-// ---- Expense buttons ----
-setupLongPress('btn-exp-minus', function(){ adjustExpense(-5000); });
-setupLongPress('btn-exp-plus',  function(){ adjustExpense( 5000); });
+// ---- Withdrawal toggle ----
+document.getElementById('withdrawal-toggle').addEventListener('change', function() {
+  state.wdOn = this.checked;
+  document.getElementById('toggle-label').textContent = this.checked ? 'On' : 'Off';
+  document.getElementById('withdrawal-panel').style.display = this.checked ? 'block' : 'none';
+  document.getElementById('withdrawal-result').style.display = this.checked ? 'block' : 'none';
+  calculate();
+});
 
-function adjustExpense(delta) {
-  state.expense = Math.max(0, state.expense + delta);
-  document.getElementById('disp-expense').textContent = fmtAmt(state.expense);
-  document.getElementById('input-expense').value = state.expense;
+// ---- Withdrawal buttons ----
+setupLongPress('btn-yield-minus', function(){ adjustWd('wdYield', -0.5, 0, 20, 'disp-yield', 'input-yield'); });
+setupLongPress('btn-yield-plus',  function(){ adjustWd('wdYield',  0.5, 0, 20, 'disp-yield', 'input-yield'); });
+setupLongPress('btn-wdage-minus', function(){ adjustWd('wdAge', -1, 30, 110, 'disp-wdage', 'input-wdage'); });
+setupLongPress('btn-wdage-plus',  function(){ adjustWd('wdAge',  1, 30, 110, 'disp-wdage', 'input-wdage'); });
+setupLongPress('btn-life-minus',  function(){ adjustWd('lifeAge', -1, 50, 120, 'disp-life', 'input-life'); });
+setupLongPress('btn-life-plus',   function(){ adjustWd('lifeAge',  1, 50, 120, 'disp-life', 'input-life'); });
+
+function adjustWd(key, delta, mn, mx, dispId, inputId) {
+  state[key] = Math.round((Math.max(mn, Math.min(mx, state[key] + delta))) * 10) / 10;
+  document.getElementById(dispId).textContent = state[key];
+  var inp = document.getElementById(inputId);
+  if (inp) inp.value = state[key];
   calculate();
 }
-document.getElementById('input-expense').addEventListener('input', function() {
-  state.expense = Math.max(0, parseFloat(this.value) || 0);
-  document.getElementById('disp-expense').textContent = fmtAmt(state.expense);
-  calculate();
+
+['input-yield','input-wdage','input-life'].forEach(function(id) {
+  var el = document.getElementById(id);
+  if (el) el.addEventListener('input', function() {
+    var map = {'input-yield':'wdYield','input-wdage':'wdAge','input-life':'lifeAge'};
+    var dispMap = {'input-yield':'disp-yield','input-wdage':'disp-wdage','input-life':'disp-life'};
+    state[map[id]] = parseFloat(this.value) || 0;
+    document.getElementById(dispMap[id]).textContent = state[map[id]];
+    calculate();
+  });
 });
 
 // ---- Phase visibility ----
@@ -752,39 +800,44 @@ function calculate() {
   });
 
   // 4% rule
-  var exp=state.expense;
-  var years=ra-sa;
-  var inflFactor=Math.pow(1+inflR, years);
-  var inflatedMonthly=Math.round(exp*inflFactor);
-  var inflatedAnnual=inflatedMonthly*12;
-  var r4target=inflatedAnnual*25;
-  var safeW=fNom*0.04;
-  var gap=r4target-fNom;
+  // Withdrawal planner
+  if (state.wdOn) {
+    var wdAge = state.wdAge;
+    var lifeAge = state.lifeAge;
+    var wdYield = state.wdYield / 100;
+    var currentYear = new Date().getFullYear();
+    var wdYear = currentYear + (wdAge - sa);
+    var lifeYear = currentYear + (lifeAge - sa);
+    var n = lifeAge - wdAge;
 
-  document.getElementById('r4-target').textContent    = fmtTWD(Math.round(r4target));
-  document.getElementById('r4-portfolio').textContent = fmtTWD(fNom);
-  document.getElementById('r4-withdrawal').textContent= fmtTWD(Math.round(safeW))+' / yr';
+    // Portfolio at withdrawal start (may coast after retirement)
+    var wdPortfolio = fNom;
+    if (wdAge > ra) {
+      wdPortfolio = fNom * Math.pow(1 + wdYield, wdAge - ra);
+    }
 
-  var note=document.getElementById('r4-inflation-note');
-  var res=document.getElementById('rule4-result');
-  var sta=document.getElementById('rule4-status');
-  if (exp===0) {
-    res.className='rule4-result neutral'; sta.className='rule4-status neutral';
-    sta.textContent='Set monthly expenses to see 4% Rule assessment.';
-    note.style.display='none';
-  } else if (fNom>=r4target) {
-    res.className='rule4-result on-track'; sta.className='rule4-status on-track';
-    sta.textContent='On track -- exceeds 4% target by '+fmtTWD(Math.round(-gap))+'.';
-    note.style.display='block';
-    note.textContent='Target is inflation-adjusted: '+fmtAmt(exp)+'/mo today = '+fmtAmt(inflatedMonthly)+'/mo at retirement ('+state.infl+'% inflation, '+years+' years).';
-  } else {
-    res.className='rule4-result off-track'; sta.className='rule4-status off-track';
-    sta.textContent='Gap of '+fmtTWD(Math.round(gap))+' -- invest more or retire later.';
-    note.style.display='block';
-    note.textContent='Target is inflation-adjusted: '+fmtAmt(exp)+'/mo today = '+fmtAmt(inflatedMonthly)+'/mo at retirement ('+state.infl+'% inflation, '+years+' years).';
+    // Use real interest rate to account for inflation
+    // Real rate = (1 + nominal) / (1 + inflation) - 1
+    var realYield = (1 + wdYield) / (1 + inflR) - 1;
+
+    // Annuity formula using real rate: PMT = PV * r / (1 - (1+r)^-n)
+    // Result is in today's purchasing power, fixed every year
+    var annualWd = (n > 0 && realYield > 0)
+      ? wdPortfolio * realYield / (1 - Math.pow(1 + realYield, -n))
+      : (n > 0 ? wdPortfolio / n : 0);
+
+    document.getElementById('wd-annual').textContent   = fmtTWD(Math.round(annualWd));
+    document.getElementById('wd-monthly').textContent  = fmtTWD(Math.round(annualWd / 12));
+    document.getElementById('wd-portfolio').textContent= fmtTWD(Math.round(wdPortfolio));
+
+    var res2 = document.getElementById('withdrawal-result');
+    var sta2 = document.getElementById('wd-status');
+    res2.className = 'rule4-result on-track';
+    sta2.className = 'rule4-status on-track';
+    sta2.textContent = 'Starting ' + wdYear + ' (age ' + wdAge + '), withdrawing until ' + lifeYear + ' (age ' + lifeAge + ') -- ' + n + " years. Amounts shown in today's purchasing power.";
   }
 
-  drawChart(labels, nomVals, prinVals, realVals, exp>0?r4target:0);
+  drawChart(labels, nomVals, prinVals, realVals, 0);
 }
 
 function reportHeight() {
